@@ -1,0 +1,14 @@
+C:\Users\ivoni\source\repos\domashna\domashna\bin\Debug\net6.0\domashna.exe
+C:\Users\ivoni\source\repos\domashna\domashna\bin\Debug\net6.0\domashna.deps.json
+C:\Users\ivoni\source\repos\domashna\domashna\bin\Debug\net6.0\domashna.runtimeconfig.json
+C:\Users\ivoni\source\repos\domashna\domashna\bin\Debug\net6.0\domashna.dll
+C:\Users\ivoni\source\repos\domashna\domashna\bin\Debug\net6.0\domashna.pdb
+C:\Users\ivoni\source\repos\domashna\domashna\obj\Debug\net6.0\domashna.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ivoni\source\repos\domashna\domashna\obj\Debug\net6.0\domashna.AssemblyInfoInputs.cache
+C:\Users\ivoni\source\repos\domashna\domashna\obj\Debug\net6.0\domashna.AssemblyInfo.cs
+C:\Users\ivoni\source\repos\domashna\domashna\obj\Debug\net6.0\domashna.csproj.CoreCompileInputs.cache
+C:\Users\ivoni\source\repos\domashna\domashna\obj\Debug\net6.0\domashna.dll
+C:\Users\ivoni\source\repos\domashna\domashna\obj\Debug\net6.0\refint\domashna.dll
+C:\Users\ivoni\source\repos\domashna\domashna\obj\Debug\net6.0\domashna.pdb
+C:\Users\ivoni\source\repos\domashna\domashna\obj\Debug\net6.0\domashna.genruntimeconfig.cache
+C:\Users\ivoni\source\repos\domashna\domashna\obj\Debug\net6.0\ref\domashna.dll

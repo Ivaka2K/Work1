@@ -1,26 +1,28 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using static System.Formats.Asn1.AsnWriter;
+using static System.Net.Mime.MediaTypeNames;
 
-public class Program
+class Program
 {
     static void Main(string[] args)
     {
         Console.OutputEncoding = Encoding.UTF8;
-
-        string filePath = "C:\\Users\\ivoni\\source\\repos\\domashna\\domashna\\Book\\ivan.txt"; // Replace with the path to your text file
+        string filePath = "C:\\Users\\Ivaka2K\\Desktop\\Domashna 1\\Domashna 1\\IvanV.txt"; // Replace with the path to your text file
 
         if (!File.Exists(filePath))
         {
-            Console.WriteLine("Липсва вашият документ.");
+            Console.WriteLine("The specified file does not exist.");
             return;
         }
 
         string text = File.ReadAllText(filePath);
+        Console.WriteLine(text);
 
         // Initialize shared variables for statistics
         int wordCount = 0;
@@ -28,7 +30,7 @@ public class Program
         string longestWord = null;
         int totalWordLength = 0;
         Dictionary<string, int> wordFrequency = new Dictionary<string, int>();
-        
+
         // Lock object for thread synchronization
         object lockObject = new object();
 
@@ -37,7 +39,7 @@ public class Program
         {
             Task.Run(() =>
             {
-                string[] words = Regex.Split(text, @"\W+");
+                string[] words = Regex.Split(text, @"\W+");//преглежда текста и всичко което не е дума не го слага в dictionary (премахва TAB,пунктуация)
                 foreach (string word in words)
                 {
                     if (word.Length >= 3)
@@ -65,7 +67,7 @@ public class Program
 
             Task.Run(() =>
             {
-                string[] words = Regex.Split(text, @"\W+");
+                string[] words = Regex.Split(text, @"\W+"); //преглежда текста и всичко което не е дума не го слага в dictionary (премахва TAB,пунктуация)
                 Dictionary<string, int> frequency = new Dictionary<string, int>();
                 foreach (var word in words)
                 {
@@ -76,7 +78,7 @@ public class Program
                         else
                             frequency[word] = 1;
                     }
-                }              
+                }
 
                 lock (lockObject)
                 {
@@ -89,7 +91,7 @@ public class Program
         Task.WhenAll(tasks).Wait();
 
         // Calculate average word length
-        double averageWordLength =wordCount == 0 ? 0 : (double)totalWordLength / wordCount;
+        double averageWordLength = wordCount == 0 ? 0 : (double)totalWordLength / wordCount;
 
         // Find the five most common words
         List<string> mostCommonWords = FindMostCommonWords(wordFrequency, 5);
@@ -98,16 +100,16 @@ public class Program
         List<string> leastCommonWords = FindLeastCommonWords(wordFrequency, 5);
 
         // Display the results
-        Console.WriteLine($"Брой на думите: {wordCount}");
-        Console.WriteLine($"Най-кратката дума е: {shortestWord}");
-        Console.WriteLine($"Най-дългата дума е: {longestWord}");
-        Console.WriteLine($"Средната дължина на думите в текста е: {averageWordLength:F2}");
-        Console.WriteLine("5 най-често срещани думи в текста:");
+        Console.WriteLine($"Number of Words: {wordCount}");
+        Console.WriteLine($"Shortest Word: {shortestWord}");
+        Console.WriteLine($"Longest Word: {longestWord}");
+        Console.WriteLine($"Average Word Length: {averageWordLength:F2}");
+        Console.WriteLine("Five Most Common Words:");
         foreach (var word in mostCommonWords)
         {
             Console.WriteLine(word);
         }
-        Console.WriteLine("5 най-рядко срещани думи в текста:");
+        Console.WriteLine("Five Least Common Words:");
         foreach (var word in leastCommonWords)
         {
             Console.WriteLine(word);
@@ -116,40 +118,57 @@ public class Program
 
     static List<string> FindMostCommonWords(Dictionary<string, int> wordFrequency, int count)
     {
-        List<string> mostCommonWords = new List<string>();
-        foreach (var pair in wordFrequency)
+        List<string> top5Words = new List<string>();
+        foreach (var word in wordFrequency)
         {
-            mostCommonWords.Add(pair.Key);
-            if (mostCommonWords.Count >= count)
-                break;
-        }
-        mostCommonWords.Sort((w1, w2) => wordFrequency[w2].CompareTo(wordFrequency[w1]));
-        return mostCommonWords;
-    }
-
-    static List<string> FindLeastCommonWords(Dictionary<string, int> wordFrequency, int count)
-    {
-        List<string> leastCommonWords = new List<string>();
-        foreach (var pair in wordFrequency) 
-        {
-            if (leastCommonWords.Count < count)
+            // Check if the list is not full (less than 5 words)
+            if (top5Words.Count < 5)
             {
-                leastCommonWords.Add(pair.Key);
+                top5Words.Add(word.Key);
             }
             else
             {
-                foreach (var word in leastCommonWords)
+                // Compare the frequency with the lowest frequency in the top 5
+                for (int i = 0; i < top5Words.Count; i++)
                 {
-                    if (pair.Value < wordFrequency[word])
+                    if (wordFrequency[top5Words[i]] < word.Value)
                     {
-                        leastCommonWords.Remove(word);
-                        leastCommonWords.Add(pair.Key);
+                        // Replace the word with the lower frequency    
+                        top5Words[i] = word.Key;
                         break;
                     }
                 }
             }
-            leastCommonWords.Sort((w1, w2) => wordFrequency[w1].CompareTo(wordFrequency[w2]));
+
         }
-        return leastCommonWords;
+        return top5Words;
+    }
+
+    static List<string> FindLeastCommonWords(Dictionary<string, int> wordFrequency, int count)
+    {
+        List<string> lowest5Words = new List<string>();
+
+        foreach (var word in wordFrequency)
+        {
+            // Check if the list is not full (less than 5 words)
+            if (lowest5Words.Count < 5)
+            {
+                lowest5Words.Add(word.Key);
+            }
+            else
+            {
+                // Compare the frequency with the highest frequency in the lowest 5
+                for (int i = 0; i < lowest5Words.Count; i++)
+                {
+                    if (wordFrequency[lowest5Words[i]] > word.Value)
+                    {
+                        // Replace the word with the higher frequency
+                        lowest5Words[i] = word.Key;
+                        break;
+                    }
+                }
+            }
+        }
+        return lowest5Words;
     }
 }
